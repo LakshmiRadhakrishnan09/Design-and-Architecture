@@ -54,6 +54,10 @@ CDN: Netflix's custom global CDN is called OpenConnect. OpenConnect stores video
 ## How to process large files?
 ## Generate Unique ID
 
+UUID : Are globally unique. But they are very big. \
+Centalized system to generate unique id : Can result in bottelnecks. \
+Custom generator: Unique Id based on epoch time + Machine address + Counter \
+
 ## Design IoT system
 
 ## Microservices
