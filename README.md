@@ -56,11 +56,68 @@ CDN: Netflix's custom global CDN is called OpenConnect. OpenConnect stores video
 
 ## Design IoT system
 
+## Microservices
+
+Service-oriented architecture composed of loosely coupled elements that have bounded contexts. \
+Consists of multiple services(Order processing, Shipping...). Each one is a microservice.Each service has a well-defined boundary in the form of an RPC or message driven API. \
+Each service has its own database -  polyglot persistence architecture.
+
+Drawbacks:
+* inter-process communication : need to handle partial failures.
+* partitioned database architecture: Transactions are difficult in distributed databases. Need to update multiple databases owned by different services. Need to use eventual consistency based approach.
+* Testing is complicated.
+* Service discovery is needed.
+* Cloud Foundry(PaaS) or Kubernetes(your own PaaS) - Read more on CF
+
+https://microservices.io/patterns/microservices.html \
+https://github.com/merikbest/ecommerce-spring-reactjs
+
+## Openshift
+
+WebConsole for K8s. provides monitoring and logging integration. Add concepts of projects and users.
+
+* Pod: one or more containers guaranteed to run on same host.The containers within pod share a unique IP address. They communicate each other using "localhost" and also share volumes(persistent storage).
+* Service: A set of pods that represent same application.A Service has its on IP address and DNS name. This represents the end point for applications. Pods can die and start again, but service end point IP remanins the same. Service DNS name is accessible only with Openshift cluster. 
+* Route: To make a service accessible, a route needs to be created. Creating a route automatically set up a haproxy router with an externally addressable DNS name, exposing the service and load balancing traffic across the pods.
+
+Discussions: \
+Service to pod : http or https? where is the certificate? \
+Kong to openshift: what certificates
+
+Sample Yaml
+```Kind:Service 
+spec
+	ports: port, targetport
+	type:ClusterIP
+
+kind:Route
+matadata: annotations
+		haproxy.route.openshift.io/ip_whitelist
+		haproxy.route.openshift.io/timeout
+spec: 
+	port: sourceport, targetport
+	tls 
+		termination:edge 
+		insecureEdgeTerminationPolicy: Redirect
+	to
+		kind:Service
+		name:
+		weight:100  ```
+
 ## Kubernetes
 
 ## Java Streams
 
 ## Database Concepts
+
+### Normalization
+1NF - Each row should have a primary key \
+2NF - All non-key attribute must depend on the entire PK \
+3NF - Remove transitive dependencies
+
+why we need to normalize data? \
+To eliminate redundancies. \
+To properly insert and update records( using a primary key)
 
 ### Sharding
 
@@ -88,12 +145,22 @@ Ensure Scalability: Can add more resources at backend. \
   <li>Source IP Hash</li>
 </ul>
 
+Layer 4 : Based on source and destination IP addresses and ports. Not based on contents. \
+Layer 7 : Based on http request
+
+HAProxy: LoadBalancer
+nginx: LoadBalancer + Web Server
+
 ### Use case discussions
 1. In a shopping cart application, how added items can be stored?
    * Locally in browser. If you are using a load balancer, all request from client should be sent to same backend server during the duration of session. 
    * How to store session in browser?
 2.  
 
+Ref:
+https://www.nginx.com/blog/introduction-to-microservices/
+https://www.nginx.com/resources/glossary/layer-4-load-balancing/#layers
+https://www.nginx.com/resources/glossary/layer-7-load-balancing/
 
 
 ## Reference
