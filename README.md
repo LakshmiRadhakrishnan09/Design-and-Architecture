@@ -3,9 +3,37 @@ Design and Architecture Notes
 
 ## How Hashmap works internally
 ## How Git works internally
-## How Guava Cache works internally
+
 
 ## Design LRU Cache
+
+1. Using HashMap and Doubly linked list
+HashMap : For random access \
+Doubly linked list: to keep track of least recetly used item \
+    add: Insert item at tail \
+    evict: Remove item at head \
+    get: remove item(from anywhere) and add at tail \
+    Note: If a singlelinkedlist is used, to remove an item at middle, we need to traverse the entire list. If an array is used, then also removal needs rearranging items. With doubly linked list removal of middle item can be acheieved in o(1) time. \
+    
+    ![image](https://user-images.githubusercontent.com/33679023/147654848-9a493bc0-ca8e-4566-b20b-7a43e3be9bbd.png)
+
+Ref: https://www.baeldung.com/java-lru-cache
+
+LRUCache(K,V> \
+    Map<K, LinkedListNode<CacheElement<K,V>>> map = new ConcurrentHashMap<>(size); \
+    DoublyLinkedList<CachedElement<K,V>> = new DoublyLinkedList<>(); \
+    ReentrantReadWriteLock lock = new ReentrantReadWriteLock(); //gives more flexibility than synchronized methods. \
+
+2. Using LinkedHashMap
+LinkedHashMap: Maintains iteration order(insertion-order or access-order - controlled by parameter "accessOrder" passed to constructor). Uses a doubly-liked list through all of its entries. removeEldestEntry(eldestEntry) internal method handles removal of eldest entry. This method can be overridden. This is not thread-safe. Use Collections.synchronizedMap(new LinkedHashMap) or synchronized methods.
+
+
+## How Guava Cache works internally
+
+How Gauva Cache expires items:\
+There is no thread to remove items at expiry time. Expired items are removed during read() or write() operations. Guava Cache maintains a linked list of entries from least recent access to most recent access. When an entry is accessed, it removes itself from its position in the linked list and moves itself to end of queue. When evict need to be performed, items are removed from linked list from front of the queue until it finds an unexpired entry.
+
+
 ## Design Parking Lot
 ## Design Railway Reservation System
 ## Design Elevator System
