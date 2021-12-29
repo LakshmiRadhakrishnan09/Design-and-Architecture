@@ -85,7 +85,8 @@ Service to pod : http or https? where is the certificate? \
 Kong to openshift: what certificates
 
 Sample Yaml
-```Kind:Service 
+```
+Kind:Service 
 spec
 	ports: port, targetport
 	type:ClusterIP
@@ -102,7 +103,8 @@ spec:
 	to
 		kind:Service
 		name:
-		weight:100  ```
+		weight:100  
+```
 
 ## Kubernetes
 
