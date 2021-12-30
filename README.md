@@ -64,12 +64,19 @@ Nosql dbs : Cassandra, DynamoDB or Riak
 1. createTinyUrl(longUrl)
 2. getLongUrl(tinyurl)
 
+**Cloud Services**
+* Lambda
+* DynamoDB
+* API gateway
+
 **Ref**
-https://aws.amazon.com/blogs/compute/build-a-serverless-private-url-shortener/
+https://aws.amazon.com/blogs/compute/build-a-serverless-private-url-shortener/ \
 https://www.youtube.com/watch?v=JQDHz72OA3c
 
 ## Design Whatzapp messager
 ## Design Twitter
+## Design Uber
+## Design Instagram
 ## Design a search engine
 ## Design Facebook
 ## Design StackOverFlow
