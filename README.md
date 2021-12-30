@@ -39,6 +39,35 @@ There is no thread to remove items at expiry time. Expired items are removed dur
 ## Design Elevator System
 
 ## Design a Tiny URL system
+
+**Requirement:** For a given long url , create a short url( may be of 7 characters). \
+**How to create 7 character unique short url:** 
++ We cannot use UUID or GUID as they are longer. 
++ We can use Base62 strings - 26 small alphabets, 26 capital alphabets and 10 numbers. 26 + 26 + 10 = 62 characters. 7 positions. Total 62 ^ 7 unique combinations possible(3.2 trillion). They can be used as tiny urls. Each app server generate a new number and get the base62 encoded string. 
++ We can use MD5 hash for the long url. MD5 character length is more, so we can use first 7 characters. 
+	
+**Problem:** 
++ If we use Base62: If we have multiple app servers that generate random numbers, it can result in same tiny url for two different long url. 
++ If we use MD5: It is possible that first 7 chracters are same for two different long urls. It can result in same tiny url for two different long url. 
+
+**Solution:** 
+1. After generating tiny url, check if it is present in DB. Problem: This can result in race condition. Not a best solution.
+2. Use RDBMS, unique key constraint. Problem:Not possible for NoSql DBs.
+3. Use a single server service which generates sequential counters. All app servers get key from this service. Problem: This can cause Single Point of failure.
+4. Each app server keeps a counter. Counter can be range based. 0 to one lakh for first app server,etc. Problem:Coordintion is difficult. How to manage if range is exhausted?Service is lost?
+5. Use zookeeper. Provides distributed coordination. Keep a range and allocate to each appserver. Appserver use the counter to generate encoded base62 string.
+
+**What database we can use?**
+Nosql dbs : Cassandra, DynamoDB or Riak
+
+**APIs**
+1. createTinyUrl(longUrl)
+2. getLongUrl(tinyurl)
+
+**Ref**
+https://aws.amazon.com/blogs/compute/build-a-serverless-private-url-shortener/
+https://www.youtube.com/watch?v=JQDHz72OA3c
+
 ## Design Whatzapp messager
 ## Design Twitter
 ## Design a search engine
