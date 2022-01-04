@@ -205,6 +205,21 @@ https://www.nginx.com/resources/glossary/layer-4-load-balancing/#layers
 https://www.nginx.com/resources/glossary/layer-7-load-balancing/
 
 
+## Microservice Monitoring
+
+### Spring boot - Prometheus - Grafana
+Enable micrometer-registry-prometheus \
+Run prometheus - time series data model. time series metric collected via a PULL model over HTTP. You configure prometheus to pull data from yout spring boot application. \
+Grafana - For dashboards
+
+### Distributed tracing
+
+### Code instrumentation
+
+
+1. What is Saga Pattern
+2. U have 30 microservices using RDBMS
+
 ## Reference
 https://github.com/jwasham/coding-interview-university \
 https://github.com/joydeep1982/system-design-interview \
