@@ -3,8 +3,16 @@ Design and Architecture Notes
 
 ## How Hashmap works internally
 ## How Git works internally
-
-
+	File system + hash + tree + blob
+	Every commit is a hash
+	Every hash is stored in file system as a folder. First two characters of hash as folder name. Remaining part as files inside folder.
+	Each file is either a tree or a blob.
+	tree refer to other blobs.
+	Each blob is the actual file committed as part of that commit.
+	Utlities available to show wach file.
+	
+	Git diff utility
+	Algorithm based on String - Minimum changes required to transform string1 to string2.
 ## Design LRU Cache
 
 1. Using HashMap and Doubly linked list
@@ -109,8 +117,82 @@ Drawbacks:
 * Service discovery is needed.
 * Cloud Foundry(PaaS) or Kubernetes(your own PaaS) - Read more on CF
 
+Protocols
+* HTTP
+* Websocket
+* STOMP
+* Trift binary RPC
+* AMQP messaging protocol
+
+Formats
+* JSON
+* XML
+* Binary
+	* Avro
+	* Protocol Buffers
+
+Microservice inter process communication
+1. asynchronous, messagging based mechanism - Notification, Pub/sub, Async response (using RxJava, CompletableFuture). Message Broker: JMS or AMQP. Brokerless: Zeromq. Messaging systems:  RabbitMQ, Apache Kafka, Apache ActiveMQ, and NSQ.
+2. synchronous : such as HTTP or Thrift
+
+Service Discovery \
+* Client Side: Client queries the service registry. Client selects one of the available service instance(load balancing need to be implemented at client side). Application specific routing can be implemented). Eg: Netflix OSS, Netflix Ribbon.
+* Server Side: Client makes a request to a loadbalancer. LB queries the service registry. Eg: AWS ELB
+* In both cases , clients registers with a service registry (which is a database of available service instances). Eg: Netflix Eureka, etcd, consul , zookeeper
+
+Service Registeration \
+* Self Registeration: a service instance is responsible for registering and deregistering itself with the service registry.  Netflix OSS Eureka client, Spring Cloud makes it easier with annotations.
+* Third Party registeration pattern:  NetflixOSS Prana,  Registrator project
+
+How to deploy a Eureka Server in AWS - Runs with Elastic IP. One or more Eureka Server in each AZ. 
+
+Clarification: With kubernetes , Marathon and  AWS service discovery is handled by framework itself. Kubernetes and Marathon handle service instance registration and deregistration.
+
+API Gateway \
+For displaying a single page in client application(UI), multiple backend microservices need to be called. Problem: Client code will be complicated, multiple request over public internet. A better approach is to use API gateway. Act as a single entry point to the system. Eg: Netfliz API Gateway, Kong API Gateway, Azure API Gateway, AWS API Gateway. Can handle request routing, composition of response ( a single product api , aggregates product information and recommendation) and protocol transmission.
+
+To implement a scalable API Gateway- On the JVM you can use one of the NIO-based frameworks such Netty, Vertx, Spring Reactor, or JBoss Undertow.Netflix created RxJava for the JVM specifically to use in their API Gateway.
+
+Implementing a microservice architecture- considerations \
+Performance and Scalability
+Using a Reactive Programming Model
+Service Invocation or inter process communication
+Service Discovery
+Handling Partial Failures : Should never block  indefinitely waiting for a downstream service. Staregies: Network timeouts.Use timeouts when waiting for a response. Ensures that resources are never tied up indefinitely. Based on scenarion handle failures. If recommendation service is down, return product information and replace recommendation with empty list or hardcoded top ten default list. If product information is failing return error code or return it from cache.Netflix Hystrix: Implements a circuit breaker pattern. If you are using the JVM you should definitely consider using Hystrix.
+
+
+Handling transactions across microservices : Event driven architecture
+	Need to implement compensating transactions
+	Challenge: Dealing with duplicate events
+		   Dealing with Atomicity: update the database and publish the event. These two operation should be done atomically.
+		   Solution: Publishing Events Using Local Transactions: The trick is to have an EVENT table, which functions as a message queue, in the database that stores the state of the business entities. The application begins a (local) database transaction, updates the state of the business entities, inserts an event into the EVENT table, and commits the transaction. A separate application thread or process queries the EVENT table, publishes the events to the Message Broker, and then uses a local transaction to mark the events as published.
+		Order Service
+			Begin Transaction
+				Insert Order table
+				Insert Event table
+			Commit Transaction
+		Event Publisher	
+			Queries event table and publish the event and update event table  as published
+
+		Problem: Database need to support transactions. May not be supported by NoSql dbs.
+		Solution: Mining a Database Transaction Log Eg DynamoDB Streams
+		Event Sourcing: stores a sequence of state-changing events. 
+
+Handling queries that retrieve data from multiple microservices :Materialized view using a Doucment Db(MongoDB). A service that listens for events and update the view.
+
+Monolithic to Microservice:
+* Strangler Application: https://martinfowler.com/bliki/StranglerFigApplication.html
+* incrementally refactor your monolithic application
+* run it in conjunction with your monolithic application
+* Add new features in standalone microservice
+* Split Frontend and Backend
+
+etcd : service discovery and shared configuration . Key value pair\
+zookeeper: orchestration between different services. To maintain who is alive and active. 
+
 https://microservices.io/patterns/microservices.html \
-https://github.com/merikbest/ecommerce-spring-reactjs
+https://github.com/merikbest/ecommerce-spring-reactjs \
+Read more: https://queue.acm.org/detail.cfm?id=1394128
 
 ## Openshift
 
@@ -173,6 +255,11 @@ Hashed Sharding: Apply hashing alogorithm on a field. No need for lookup table. 
 Entity based Sharding: Keep related data together. \
 GeoSharding: Shared key based on geography and shards themselves are geo-located.
 
+### Consistent Hashing
+Hashing: maps a wide range of input to a fixed range of output.
+Distributed Caching: A hashtable that is distributed among multiple nodes. Due to limitation of memory, hash table is split among multiple servers. The keys are distributed among several servers.
+
+
 ## Load Balancing
 
 Ensure Availability: Direct traffic to only healthy servers. \
@@ -215,6 +302,13 @@ Grafana - For dashboards
 ### Distributed tracing
 
 ### Code instrumentation
+
+### REST
+REST - based on HTTP. use HTTP verbs. representation of a resource. HATEOAS (Hypertext As The Engine Of Application State) 
+
+Drawbacks of HTTP:
+Only for request-response. Not for notifications.
+Interface Definition: RAML and swagger.
 
 
 1. What is Saga Pattern
