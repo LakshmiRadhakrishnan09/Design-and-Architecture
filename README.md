@@ -341,15 +341,6 @@ Calls API of the service to be tested. Test service is deployed as a container a
 ### Performance Testing
 Java - Locust script written in python. \
 
-### REST
-REST - based on HTTP. use HTTP verbs. representation of a resource. HATEOAS (Hypertext As The Engine Of Application State) 
-
-Drawbacks of HTTP:
-Only for request-response. Not for notifications.
-Interface Definition: RAML and swagger.
-
-### Web sockets
-Are bidrectional. Are full duplex. Single TCP connection  - Initial HTTP request, upgrade to socket connection
 
 ### Restrict concurrent access to a session
 Check when multiple tabs are opened in abrowser how sessionIds are created?
