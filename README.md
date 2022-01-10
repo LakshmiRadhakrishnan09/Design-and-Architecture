@@ -3,16 +3,18 @@ Design and Architecture Notes
 
 ## How Hashmap works internally
 ## How Git works internally
-	File system + hash + tree + blob
-	Every commit is a hash
-	Every hash is stored in file system as a folder. First two characters of hash as folder name. Remaining part as files inside folder.
-	Each file is either a tree or a blob.
-	tree refer to other blobs.
-	Each blob is the actual file committed as part of that commit.
-	Utlities available to show wach file.
+
+* File system + hash + tree + blob \
+Every commit is a hash \
+Every hash is stored in file system as a folder. First two characters of hash as folder name. Remaining part as files inside folder. \
+Each file is either a tree or a blob. \
+tree refer to other blobs. \
+Each blob is the actual file committed as part of that commit. \
+Utlities available to show wach file. \
 	
-	Git diff utility
-	Algorithm based on String - Minimum changes required to transform string1 to string2.
+* Git diff utility \
+Algorithm based on String - Minimum changes required to transform string1 to string2. \
+
 ## Design LRU Cache
 
 1. Using HashMap and Doubly linked list
@@ -188,7 +190,11 @@ Monolithic to Microservice:
 * Split Frontend and Backend
 
 etcd : service discovery and shared configuration . Key value pair\
-zookeeper: orchestration between different services. To maintain who is alive and active. 
+zookeeper: orchestration between different services. To maintain who is alive and active. \
+Eureka: Service Registration and Discovery \
+Ribbon: Dynamic Routing and Load Balancer \
+Hystrix: Circuit Breaker \
+Zuul: Edge Server \
 
 https://microservices.io/patterns/microservices.html \
 https://github.com/merikbest/ecommerce-spring-reactjs \
@@ -230,6 +236,8 @@ spec:
 
 ## Kubernetes
 
+### Spring cloud vs Kubernetes
+https://dzone.com/articles/deploying-microservices-spring-cloud-vs-kubernetes
 ## Java Streams
 
 ## Database Concepts
@@ -256,8 +264,17 @@ Entity based Sharding: Keep related data together. \
 GeoSharding: Shared key based on geography and shards themselves are geo-located.
 
 ### Consistent Hashing
-Hashing: maps a wide range of input to a fixed range of output.
-Distributed Caching: A hashtable that is distributed among multiple nodes. Due to limitation of memory, hash table is split among multiple servers. The keys are distributed among several servers.
+Hashing: maps a wide range of input to a fixed range of output.  \
+Distributed HashTable: A hashtable that is distributed among multiple nodes. Due to limitation of memory, hash table is split among multiple servers. The keys are distributed among several servers. \
+Scenario: Load balancing, Distributed Caching(key-value pair)
+server = hash(key) mod N \
+The key is retrieved from corresponding server.  \
+Problem: what if no of servers change. Keys need to be redestributed to include the new server. Lot of change in distribution. Most of keys are redistributed. \
+Solution:Consistent Hashing \
+Distributes position on a hash ring. Index is independent of number of servers.   \
+server = between 0 and 360 ( circle) \
+distribute keys and servers in the ring(same circle) \
+Each object key will belong in the server whose key is closest, in a clounterclock wise direction ( or clockwise). To find out which server to ask for a given key, we need to locate the key on the circle and move in the ascending angle direction until we find a server. \
 
 
 ## Load Balancing
@@ -302,6 +319,27 @@ Grafana - For dashboards
 ### Distributed tracing
 
 ### Code instrumentation
+Add code to application code while ClassLoader loads or application starts.
+What are java agents? \
+Java agents are part of the Java Instrumentation API. The class that implements Java Agent must implement a method called 
+	''' public static void premain(String agentArgs, Instrumentation inst) '''
+This method forms the entry point of the agent, much like the entry point to a regular Java program is the main method. \
+ByteBuddy library. \
+	''' java -javaagent:appdynamics.jar -jar app.jar '''
+MainApplication.jar and javaagent jar with premain method. JavaAgent will have hooks like OnEntry and OnExit to add additional behavious to code.
+
+## Testing
+
+### Component benchmarking
+Given memory, CPU cores, DiskIO, network, start with 1 user and increase load. See when application memory consumption reaches 85%, with no errors and response time < 500ms. That is the component benchmark. Say component1 need 3gb, 2 core and supports 10 users, component2 need 6gb, 3 core and supports 100 users. For a system that need both these components, to suppot 100 users, we need to scale component1 resources to 3gb * 10 and 2 core * 10. Test both horizontal and vertical scaling.
+
+### BDD Testing
+Java - Cucumber \
+Add feature files. Add steps for Given, when, then. \
+Calls API of the service to be tested. Test service is deployed as a container and test against k8s service end point.
+
+### Performance Testing
+Java - Locust script written in python. \
 
 ### REST
 REST - based on HTTP. use HTTP verbs. representation of a resource. HATEOAS (Hypertext As The Engine Of Application State) 
@@ -310,9 +348,20 @@ Drawbacks of HTTP:
 Only for request-response. Not for notifications.
 Interface Definition: RAML and swagger.
 
+### Web sockets
+Are bidrectional. Are full duplex. Single TCP connection  - Initial HTTP request, upgrade to socket connection
+
+### Restrict concurrent access to a session
+Check when multiple tabs are opened in abrowser how sessionIds are created?
+Requirment: I want only one user session at a time for an account.
 
 1. What is Saga Pattern
 2. U have 30 microservices using RDBMS
+
+## Networking
+Company has a DNS Server. When you are in VPN, all requests goes to a DNS server. DNS server has A record or C record. \
+When we add a endpoint/route in Kong, raise a request for creating a CNAME record pointing to corresponding enviornment's kong gateway DNS name. For "service1.endpoint" return "kongurl". \
+In Kong add certificate for "kongurl". Configure Kong with backend service.
 
 ## Reference
 https://github.com/jwasham/coding-interview-university \
