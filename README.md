@@ -238,6 +238,60 @@ spec:
 
 ### Spring cloud vs Kubernetes
 https://dzone.com/articles/deploying-microservices-spring-cloud-vs-kubernetes
+
+### Docker - Spring boot
+mvn package : create jar in target folder \
+java -jar target/myapp-1.0.0.jar \
+Create DockerFile \
+
+	```
+	FROM adoptopenjdk/openjdk11:jre-11.0.9.1-alpine 
+	COPY target/myapp-1.0.0.jar app.jar 
+	ENTRYPOINT ["java", "-jar","/app.jar"] 
+	```
+	
+docker build --tag=myapp:latest \
+docker run -p8081:8080 myapp:latest \
+http://localhost:8081/api \
+Docker Compose \
+	```
+	version: '2'
+	network:
+	  test:
+	services:
+	  app:
+	    image: 'docker-spring-boot-postgres:latest'(either this or dockerfile)
+	    build:
+	      context: .
+	      dockerfile: DockerFile(either this or image)
+	    container_name: app
+	    ports:
+	      - "8081:8080"
+	    depends_on:
+	      - db
+	    environment:
+	      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/community
+	      - SPRING_DATASOURCE_USERNAME=compose-postgres
+	      - SPRING_DATASOURCE_PASSWORD=compose-postgres
+	      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+	    network:
+	      - test
+
+	  db:
+	    image: 'postgres:13.1-alpine'
+	    container_name: db
+	    ports:
+	      - "5432:5432"
+	    environment:
+	      - POSTGRES_USER=compose-postgres
+	      - POSTGRES_PASSWORD=compose-postgres
+	      - POSTGRES_DB=community
+	   network:
+	      - test
+      ```
+docker compose up \
+
+
 ## Java Streams
 
 ## Database Concepts
