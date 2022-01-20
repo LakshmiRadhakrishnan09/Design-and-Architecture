@@ -236,6 +236,21 @@ spec:
 
 ## Kubernetes
 
+### Services
+Each Pod in K8s cluster has unique IP address. These IPs are not exposed outside cluster.\
+A Service in k8s is an abstraction which defines a logical set of pods ,enables external traffic exposure , load balancing and service discovery for pods. \
+Service types: \
+* ClusterIP(default): Exposes the service on an internal IP in the cluster. Service is reachable only within cluster.
+* NodePort: Exposes the service on the same port in a node using NAT. Service acceesible from outside using <NodeIP>:<NodePort>. 
+* LoadBalancer: Creates an external load balancer and assigns a fixed external IP to the service.
+* ExternalName: Maps service to externalName field by returning a CNAME record with its value.
+
+Docker vs k8s - Exposing IP
+	
+Docker: Docker uses host-private networking, Containers can talk to other containers in same machine. If a docker container need to be accessed outside of a machine, there must be allocated ports on the machines own IP address, which are they forwarded to the container. 
+
+docker run -p 8080:80 --> 
+
 ### Spring cloud vs Kubernetes
 https://dzone.com/articles/deploying-microservices-spring-cloud-vs-kubernetes
 
