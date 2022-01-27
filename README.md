@@ -137,12 +137,12 @@ Microservice inter process communication
 1. asynchronous, messagging based mechanism - Notification, Pub/sub, Async response (using RxJava, CompletableFuture). Message Broker: JMS or AMQP. Brokerless: Zeromq. Messaging systems:  RabbitMQ, Apache Kafka, Apache ActiveMQ, and NSQ.
 2. synchronous : such as HTTP or Thrift
 
-Service Discovery \
+Service Discovery 
 * Client Side: Client queries the service registry. Client selects one of the available service instance(load balancing need to be implemented at client side). Application specific routing can be implemented). Eg: Netflix OSS, Netflix Ribbon.
 * Server Side: Client makes a request to a loadbalancer. LB queries the service registry. Eg: AWS ELB
 * In both cases , clients registers with a service registry (which is a database of available service instances). Eg: Netflix Eureka, etcd, consul , zookeeper
 
-Service Registeration \
+Service Registeration 
 * Self Registeration: a service instance is responsible for registering and deregistering itself with the service registry.  Netflix OSS Eureka client, Spring Cloud makes it easier with annotations.
 * Third Party registeration pattern:  NetflixOSS Prana,  Registrator project
 
@@ -164,7 +164,7 @@ Handling Partial Failures : Should never block  indefinitely waiting for a downs
 
 
 Handling transactions across microservices : Event driven architecture
-	Need to implement compensating transactions
+	Need to implement **compensating transactions**
 	Challenge: Dealing with duplicate events
 		   Dealing with Atomicity: update the database and publish the event. These two operation should be done atomically.
 		   Solution: Publishing Events Using Local Transactions: The trick is to have an EVENT table, which functions as a message queue, in the database that stores the state of the business entities. The application begins a (local) database transaction, updates the state of the business entities, inserts an event into the EVENT table, and commits the transaction. A separate application thread or process queries the EVENT table, publishes the events to the Message Broker, and then uses a local transaction to mark the events as published.
@@ -179,8 +179,40 @@ Handling transactions across microservices : Event driven architecture
 		Problem: Database need to support transactions. May not be supported by NoSql dbs.
 		Solution: Mining a Database Transaction Log Eg DynamoDB Streams
 		Event Sourcing: stores a sequence of state-changing events. 
+Dual write problem: 
+* Modular monolith : Shared library. Both microservices( A and B) use same database instance. Seperate tables and schema. In microservices we use seperate databases or seperate database servers.
+* Two phase commit: Using a distributed transaction manager such as (Narayana, Jakarta Transactions API, JTS/IIOP, Message brokers such as Apache ActiveMQ) and transaction logs. Example : https://github.com/snowdrop/narayana-spring-boot/tree/main/openshift/recovery-controller - uses the Kubernetes StatefulSet pattern. 2 phases - Prepare phase and commit phase.
+* Orchestration: orchestrator service has the responsibility to call other services until they reach the desired state or take corrective actions if they fail. The orchestrator uses its local database to keep track of state changes, and it is responsible for recovering any failures related to state changes.Example -  Netflix’s Conductor, Uber’s Cadence, and Apache's Airflow. Apache Camel’s Saga pattern implementation and the NServiceBus Saga implementation. Assume we have two services A and B. Service A can act as the stateful orchestrator responsible to call Service B and recover from failures through a **compensating operation** if needed. The crucial characteristic of this approach is that Service A and Service B have local transaction boundaries, but Service A has the knowledge and the responsibility to orchestrate the overall interaction flow. We could set this up with synchronous interactions, or using a message queue in between the services (in which case you could use a two-phase commit, too). Drawbacks - eventually consistent approach. Participating services should expose compensating apis and apis should be indempotetnt( as retry is involved)
+* Choreography: participants exchange events without a centralized point of control.each service performs a local transaction and publishes events that trigger local transactions in other services. Each component of the system participates in decision-making about a business transaction's workflow, instead of relying on a central point of control.We could use an asynchronous messaging layer for the service interactions. 
+
+https://developers.redhat.com/articles/2021/09/21/distributed-transaction-patterns-microservices-compared#
+
+![image](https://user-images.githubusercontent.com/33679023/151368306-d320210f-5c1d-4508-acfa-d42c65304f7f.png)
+
+
+## Saga Pattern: 
+
+Each local transaction updates the database and publishes a message or event to trigger the next local transaction in the saga. If a local transaction fails because it violates a business rule then the saga executes a series of **compensating transactions** that undo the changes that were made by the preceding local transactions.
+There are two ways of coordination sagas:
+
+Choreography - each local transaction publishes domain events that trigger local transactions in other services. Examples Axon Saga, Eclipse MicroProfile LRA, Eventuate Tram Saga, Seata.  \
+Order Service emits Order created event. Customer service process event and emit Credit Resreve event. Order service process the event and take action. Suitable for green field applications( new services)\
+Orchestration - an orchestrator (object) tells the participants what local transactions to execute. Examples Camunda, Apache Camel. \
+Order Service emits Order created event. Orchestrator sends Create Credit command to Customer service. Customer service respond to orchestrator. Orchestrator process the event and take next action. Suitable for brownfield application( existing services).
+
 
 Handling queries that retrieve data from multiple microservices :Materialized view using a Doucment Db(MongoDB). A service that listens for events and update the view.
+
+Microservice having its own data store
+
+Assume a microservice that manages customer profile imformation and another that manages purchases. If they share data, if one microservice made any changes,it can cause side effects to another one. This is difficult to manage. The only way data can be shared with other microservices should be through public interfaces. A microservice should be independent so that as long as its public interface is not changed, current consumers of service are not impacted.
+
+Interface definition \
+REST: OpenAPI , gRPC: .proto
+
+Disadvantages of microservices
+* Need to "wire: the microservices together
+* Need more resources - its own developers, source code, testing process
 
 Monolithic to Microservice:
 * Strangler Application: https://martinfowler.com/bliki/StranglerFigApplication.html
