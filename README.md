@@ -110,7 +110,9 @@ Custom generator: Unique Id based on epoch time + Machine address + Counter \
 
 Service-oriented architecture composed of loosely coupled elements that have bounded contexts. \
 Consists of multiple services(Order processing, Shipping...). Each one is a microservice.Each service has a well-defined boundary in the form of an RPC or message driven API. \
-Each service has its own database -  polyglot persistence architecture.
+Each service has its own database -  polyglot persistence architecture. \
+Smaller unit of work that can be scaled independently. \
+Microservice and Cloud-Native are two different things. \
 
 Drawbacks:
 * inter-process communication : need to handle partial failures.
@@ -231,6 +233,8 @@ Zuul: Edge Server \
 https://microservices.io/patterns/microservices.html \
 https://github.com/merikbest/ecommerce-spring-reactjs \
 Read more: https://queue.acm.org/detail.cfm?id=1394128
+
+
 
 ## Openshift
 
