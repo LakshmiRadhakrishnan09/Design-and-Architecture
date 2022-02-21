@@ -191,6 +191,26 @@ https://developers.redhat.com/articles/2021/09/21/distributed-transaction-patter
 
 ![image](https://user-images.githubusercontent.com/33679023/151368306-d320210f-5c1d-4508-acfa-d42c65304f7f.png)
 
+## Patterns
+
+#### Integration Pattern
+* Gateway Pattern : Define contracts. Can became a single point of failure
+* Process Aggregator Pattern: Single API for client. Calls different business process together. Can cause long blocking calls.
+* Edge Pattern: Gateway pattern at client side. Client specific aggregation, scaling etc. Impacts only one client.
+
+#### Data Pattern
+* Single Service Single Database: Most be used for domain driven systems. As service is scaled, datastore also should be scaled.
+* Shared Service database: Single databases by multiple services. Use different schema. Use different users and roles. 
+* CQRS: Different model for read and write. 
+* Asynchronous Eventing: 
+
+#### Operational Pattern
+* Log aggregation: Structure should be consistent. Taxonomy should be documented. Correlation of logs. Indexing of logs.
+* Metrics aggregation: Taxonomy should be documented. Create Dashboards. Inject events, alarms. Have runbooks for all alarms.
+* Tracing Pattern: Helps to recreate call stack. Span from edge to database. Use APM tools. 
+* Externalize Confguration:
+* Service Discovery:Central location for all services.
+
 
 ## Saga Pattern: 
 
