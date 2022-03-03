@@ -478,6 +478,84 @@ Requirment: I want only one user session at a time for an account.
 Company has a DNS Server. When you are in VPN, all requests goes to a DNS server. DNS server has A record or C record. \
 When we add a endpoint/route in Kong, raise a request for creating a CNAME record pointing to corresponding enviornment's kong gateway DNS name. For "service1.endpoint" return "kongurl". \
 In Kong add certificate for "kongurl". Configure Kong with backend service.
+	
+### Cloud Foundry
+Open Source PaaS. \
+	
+	![CF](https://user-images.githubusercontent.com/33679023/156537882-66d85836-4b27-416e-9959-8e49afb0103b.png)
+
+CloudFoundry: Application Runtime
+Kubernetes: Container Runtime
+BuildPacks. \
+Diego/Garden
+Can deploy to VMs. Can deploy to containers.
+CF Manifest file
+
+Problem: \
+How to deploy my application to cloud? How to Scale? How to monitor logs? Recovery? 
+cf push: CF will identify the buildback, create an image and deploy to container. \
+cf bind services: 
+	
+* Load Balancing: BOSH creates and deploys VMs on top of a physical computing infrastructure, and deploys and runs Cloud Foundry on top of this cloud. 
+* Cloud Controller runs the apps and other processes on the cloud’s VMs, balancing demand and managing app lifecycles.
+* Gorouter routes incoming traffic from the world to the VMs that are running the apps
+* Cloud Foundry includes the following with your app’s source code:
+	Stack: the operating system the app runs on.
+	Buildpack: contains all languages, libraries, and services that the app uses.
+* 
+	
+Cloud Foundry + AWS \
+* 
+	
+## Network based authentication
+LDAP, Kerberos, Active Directory
+
+#### Kerberos
+![image](https://user-images.githubusercontent.com/33679023/156558266-cd0bf1bd-1d82-4e5e-99bc-549fee793827.png)
+	
+![image](https://user-images.githubusercontent.com/33679023/156558579-fe5c04c0-85cf-4980-bc3c-af418a947973.png)
+
+LDAP:
+	
+![image](https://user-images.githubusercontent.com/33679023/156559712-0b70b92e-4848-4b5c-b203-24ad365a8199.png)
+
+Kerberos
+	
+![image](https://user-images.githubusercontent.com/33679023/156559740-0ce11501-cceb-48ce-950d-4098ff887627.png)
+	
+oAuth2
+	
+* Framework for authorization
+* provides delegated access
+* allows idP to issue tokens to third party applications with user's consent
+* An application(spotify) can access resources from a server(facebook) on behalf of user, without sharing fb credentials with application(spotify).
+
+	
+![image](https://user-images.githubusercontent.com/33679023/156559795-03acf566-d07f-45f5-8d99-b8a0eb6e66b1.png)
+	
+SAML
+	
+* Federated authentication
+* SAML is an XML-based standard for exchanging authentication and authorization data between IdPs and service providers to verify the user’s identity and permissions, then grant or deny their access to services.
+	
+![image](https://user-images.githubusercontent.com/33679023/156559820-c7d1c15c-0203-4278-83b9-1cc0058a2d87.png)
+	
+RADIUS:
+	
+![image](https://user-images.githubusercontent.com/33679023/156559861-d14398a9-132c-48be-9ab7-6449cd6f3bf4.png)
+	
+OPENID Connect:
+	
+* Federated authentication
+* Eg: use google to sign-in to ur application.
+* Users sign into Idp and the access other websites. Sign in information is not shared with other apps.
+
+In the Microsoft environment, OAuth handles authorization, and SAML handles authentication. You could use the two at the same time to grant access (via SAML) and allow access to a protected resource (via OAuth).
+
+	
+
+
+
 
 ## Reference
 https://github.com/jwasham/coding-interview-university \
