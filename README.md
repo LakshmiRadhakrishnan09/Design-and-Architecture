@@ -578,8 +578,11 @@ OPENID Connect:
 In the Microsoft environment, OAuth handles authorization, and SAML handles authentication. You could use the two at the same time to grant access (via SAML) and allow access to a protected resource (via OAuth).
 
 	
+### How comments are stored in databases
 
 
+https://www.quora.com/How-the-Quora-database-store-comments-in-SQL
+https://confluence.atlassian.com/confkb/where-does-confluence-store-comments-in-the-database-829037420.html
 
 
 ## Reference
