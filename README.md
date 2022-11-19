@@ -254,7 +254,32 @@ https://microservices.io/patterns/microservices.html \
 https://github.com/merikbest/ecommerce-spring-reactjs \
 Read more: https://queue.acm.org/detail.cfm?id=1394128
 
+### Microservices in AWS
 
+Static pages(React UI) -> 
+- 1. S3 + CF
+- 2. AWS Amplify
+- 3. AWS ECS
+
+Backend
+- 1. ELB + ECS
+- 2. API Gateway + Lambda
+
+How to do Service Discovery in AWS?
+
+If you have an microservice architecture (based on Spring Boot) involving Amazon Elastic Container Service (ECS) with Application Load Balancer(ALB), service discovery is performed automatically by the platform, or do you need a special mechanism (such as Eureka or Consul)?
+
+https://medium.com/scribblelive-engineering/service-discovery-with-alb-advanced-request-routing-115e7a7ef2a2
+
+Transactions that span multiple microservices?
+
+Answer: Use saga Pattern - In the case of a failed business transaction, Saga orchestrates a series of compensating transactions that undo the changes that were made by the preceding transactions. 
+
+Event Sourcing - The core idea behind event sourcing is to represent and persist every application change as an event record. Instead of persisting application state, data is stored as a stream of events. Database transaction logging and version control systems are two well-known examples for event sourcing. Event sourcing has a couple of benefits: state can be determined and reconstructed for any point in time. It naturally produces a persistent audit trail and also facilitates debugging.
+
+Event sourcing is frequently used in conjunction with the Command Query Responsibility Segregation (CQRS) pattern to decouple read from write workloads and optimize both for performance, scalability, and security. 
+
+Event Sourcing -> use Kinesis Streams
 
 ## Openshift
 
