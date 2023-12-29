@@ -4,22 +4,44 @@ https://www.linkedin.com/feed/update/urn:li:activity:7127988626730217472?updateE
 Here is an outline of the preparation strategies and practical tips for acing a system design interview:
 
 𝟭) 𝗙𝘂𝗻𝗱𝗮𝗺𝗲𝗻𝘁𝗮𝗹𝘀 𝗼𝗳 𝗦𝘆𝘀𝘁𝗲𝗺 𝗗𝗲𝘀𝗶𝗴𝗻
-Scalability
-Fault tolerance
-Load balancing
-Caching
-Availability
-Consistency
-Latency
-Throughput
-Partition Tolerance
-CAP Theorem
-ACID Properties
+* Scalability (https://www.designgurus.io/blog/grokking-system-design-scalability)
+              Ability of a system to handle an increasing workload, both in terms of data volume and user requests, without compromising its performance. 
+Vertical Scaling : Adding more capacity of one machine(increase CPU , memory or storage) 
+Horizontal Scaling: Add more servers. Can add or remove based on need(More flexible). Upgrades will not cause down time. Need a Load balancer to distribute the requests. Distributed caching and distributed databases.
+Load Balancing: 
+Asynchronous Processing (Decoupled services)
+Distributed databases ( with sharding , partioning and replication): Need to take care of data consistency.
+Distributed Caching ( to reduce db reads)
+Geo-distribution ( keep the data close to user)
+Microservice Architecture: breaking down your system into smaller, independently deployable services that communicate via APIs. 
+By adopting a microservices architecture, you can achieve greater flexibility and scalability, as each service can be developed, deployed, and scaled independently. 
+Data compression
+
+In AWS: LoadBalancer(ALB) for ur Ec2 instances and ASG. 
+Read: How EKS do load balancing
+How ECS do load balancing
+* Fault tolerance
+* Load balancing
+* Caching : CDNs
+* Availability
+* Consistency
+* Resiliency: capable of recovering from failures and continuing to operate under adverse conditions. Redundancy, fault tolerance, and automated failover mechanisms. 
+Chaos Testing: Inject failures in system to identify weakness.
+* Latency
+* Throughput
+* Partition Tolerance
+* CAP Theorem
+* ACID Properties
+* Monitoring Tools
+      Collect Metrics on response times, error rates, and resource utilization.
 
 𝟮) 𝗨𝗻𝗱𝗲𝗿𝘀𝘁𝗮𝗻𝗱 𝗰𝗼𝗺𝗺𝗼𝗻 𝗱𝗲𝘀𝗶𝗴𝗻 𝗽𝗮𝘁𝘁𝗲𝗿𝗻𝘀
 Microservices
-Sharding
-Event sourcing
+**Sharding** :  Splits a database into smaller, more manageable pieces. Eg: Shard by location, shrad by first letter of name.
+Selecting the right shard key is crucial. Some shards can become hotspots. Most of the query to a single shrad.
+If data is in different shrads, it may result in cross-shard query which result in increased latency. Query patterns need to decide the shrad key.
+Reshrading or redistribuing data is difficult.
+**Event sourcing**
 Circuit Breaker
 Reverse proxy
 Backpressure
@@ -34,6 +56,28 @@ Document databases
 Graph databases
 Time-series databases
 
+Why is it hard to horizontally scale(shrading) SQL databases? 
+Due to relationships between data and ACID properties for transactions.
+**Atomicity**: Each transaction is all or nothing. If one part of transaction fails, then whole transaction fails. 
+In a distributed system it is difficult to coordinate the transactions across multiple nodes and to rollback transactions in case of partial failures. 
+It needs two phase commit. 
+**Consistency**: Transactions change the system from one valid state to another and all constaints are valid. Need distributed locks and consensus algorithm.
+**Isolation**: Concurrent transactions occur as if they are happening sequentially.
+**Durability**: Data once committed is saved for ever.
+Introduce network latency as shrads can be in different servers.
+Joins across multiple shards, Transactions across multiple shards, Maintaining constraints like foreign key, unique key are difficult in a distributed system.
+
+Consistency in ACID and consistency in CAP refers to different consistency. 
+
+Atomic Consistency(in CAP theorem) ensures that all processing units(nodes or threads) see the same updates in the same order as if they were made by a single processing unit. 
+It guarantees that updates made by one processing unit are immediately visible to all other processing units. 
+
+Tradeoff : Consistency vs Performance/Availability. 
+
+To mitigate issues with shrading: Application level Sharding, Consistent Hashing, Database Middleware, Denormalization, Polygot Persistence, Geo-Partitioning
+
+Before taking on a project as big as sharding, it’s often best to first ensure you have a sound foundation upon which you plan to extend the architecture. 
+
 𝟰) 𝗙𝗮𝗺𝗶𝗹𝗶𝗮𝗿𝗶𝘁𝘆 𝘄𝗶𝘁𝗵 𝗱𝗶𝗳𝗳𝗲𝗿𝗲𝗻𝘁 𝘁𝘆𝗽𝗲𝘀 𝗼𝗳 𝗱𝗶𝘀𝘁𝗿𝗶𝗯𝘂𝘁𝗲𝗱 𝘀𝘆𝘀𝘁𝗲𝗺𝘀 𝗮𝗻𝗱 𝗮𝗹𝗴𝗼𝗿𝗶𝘁𝗵𝗺𝘀
 Merkle Tree
 Consistent Hashing
@@ -42,6 +86,8 @@ Gossip Protocol
 Bloom Filter
 Heartbeat
 CAP and PACELC Theorems
+
+Two phase commit protocol
 
 𝟱) 𝗟𝗲𝗮𝗿𝗻 𝗵𝗼𝘄 𝘁𝗼 𝗰𝗼𝗺𝗺𝘂𝗻𝗶𝗰𝗮𝘁𝗲 𝘆𝗼𝘂𝗿 𝘁𝗵𝗼𝘂𝗴𝗵𝘁 𝗽𝗿𝗼𝗰𝗲𝘀𝘀
 Start with the problem statement
@@ -74,6 +120,8 @@ Design a URL Shortening service like TinyURL
 Design Instagram
 Designing Yelp or Nearby Friends
 Design Ticketmaster
+Design Netflix
+        CDNs
 
 Ref:
 ✅𝗦𝘆𝘀𝘁𝗲𝗺 𝗗𝗲𝘀𝗶𝗴𝗻 𝗜𝗻𝘁𝗲𝗿𝘃𝗶𝗲𝘄 𝗦𝘂𝗿𝘃𝗶𝘃𝗮𝗹 𝗚𝘂𝗶𝗱𝗲 (𝟮𝟬𝟮𝟯) -
@@ -82,3 +130,5 @@ https://lnkd.in/deqz6gnz
 ✅To learn software architecture and practice advanced system design interview questions take a look at 𝗚𝗿𝗼𝗸𝗸𝗶𝗻𝗴 𝘁𝗵𝗲 𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗦𝘆𝘀𝘁𝗲𝗺 𝗗𝗲𝘀𝗶𝗴𝗻 𝗜𝗻𝘁𝗲𝗿𝘃𝗶𝗲𝘄 - https://lnkd.in/grPz6meZ
 
 📌 Become Design Gurus affiliate and earn 20% on each referral: https://lnkd.in/gz4rqr5k
+
+https://www.designgurus.io/blog
