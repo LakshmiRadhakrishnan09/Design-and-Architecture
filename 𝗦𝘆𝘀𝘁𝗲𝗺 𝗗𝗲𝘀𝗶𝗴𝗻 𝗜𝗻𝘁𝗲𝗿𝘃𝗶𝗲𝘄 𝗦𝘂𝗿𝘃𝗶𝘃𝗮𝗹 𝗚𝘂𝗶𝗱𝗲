@@ -108,8 +108,28 @@ Step 6: Detailed design
 Step 7: Identifying and resolving bottlenecks
 
 𝟳) 𝗧𝗼𝗽 𝗦𝘆𝘀𝘁𝗲𝗺 𝗗𝗲𝘀𝗶𝗴𝗻 𝗜𝗻𝘁𝗲𝗿𝘃𝗶𝗲𝘄 𝗤𝘂𝗲𝘀𝘁𝗶𝗼𝗻𝘀
-Design Facebook Messenger
-Design Youtube
+## Design Facebook Messenger
+https://bytebytego.com/courses/system-design-interview/design-a-chat-system
+
+##Generating a unique Id
+GUID: nearly guaranteed to be unique. 128 bits long. 32 hex digit.  
+eg: 30dd879c-ee2f-11db-8314-0800200c9a66 (8–4–4–4–12)
+But problem with GUIDs are that there can be collisions howsoever minuscule that probability is.
+Other problems: They are longer( we may need shorter guids. Longer keys cannot be indexed). They are not sortable. 
+The SQL auto increment sequence id - Results in single point of failure. We cannot scale it. If we use two servers, then it will not become sortable.
+
+How others are solving this problem? - https://aaronice.gitbook.io/system-design/architecture-toolbox/id-generator?source=post_page-----d6a440cc8e5--------------------------------#single-machine
+Flickr Ticket Service(https://code.flickr.net/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/)
+* Generate unique sortable keys at scale.
+* Flickr use a single database to generate uniqueId. SELECT * from Tickets64 returns a single row with latest Id. To compensate single point of failure, two servers are used one for generating odd ids and another for even ids. It generate unique ids but they are not sortable.
+Twitter Snowflake(https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake) 
+* Final ID = Timestamp + ServerID + Counter
+Use Zookeeper for coordination
+Zookeeper Sequential nodes : performance issues
+Instagram(https://instagram-engineering.com/sharding-ids-at-instagram-1cf5a71e5a5c)
+
+
+## Design Youtube
 Design Facebook’s Newsfeed
 Design an API Rate Limiter
 Design Twitter
@@ -132,3 +152,7 @@ https://lnkd.in/deqz6gnz
 📌 Become Design Gurus affiliate and earn 20% on each referral: https://lnkd.in/gz4rqr5k
 
 https://www.designgurus.io/blog
+
+Read more
+https://aaronice.gitbook.io/system-design/architecture-toolbox/id-generator?source=post_page-----d6a440cc8e5--------------------------------#single-machine
+
