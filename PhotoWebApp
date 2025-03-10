@@ -1,0 +1,25 @@
+My Photo Web App
+------------------
+
+Day 1
+
+- Get AWS Account
+- Set Budget and nitification
+- Create IAM users - With Console Access, Add Admin Privileges. Get Access Key
+- Install Terraform
+
+Day 2
+
+- Set AWS Envt Variables
+- Write Terraform code for S3, Lambda, API Gateway
+- Create Infra. terraform init, terraform plan, terraform apply
+- Test API Gateway using using curl command
+# Not done : Directly uploaded code in AWS console. See how to direcyly push code to Lambda using aws cli. How to upload layers/dependency
+
+Day 3
+
+How to get user?
+
+
+
+
