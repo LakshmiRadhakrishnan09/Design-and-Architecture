@@ -1,0 +1,18 @@
+CAP Theorom for distributed system
+
+Consistency : Same data at every node
+
+Availability : Response to every request
+
+Partition Tolerence : Tolerant for network failures. Ability to operate even in case of network failures. Paxos/Raft.
+
+Cost
+
+Trade-off
+
+Consistency over Availability  : Relation databases(ACID). Cannot provide availability. But is consistent.
+Availability vs Partitional Tolerance : Cassandra ( Eventual Consistency)
+Consistency vs Partitiona Tolerence : Consensus Algorithm and Paxos Algorithm
+
+
+
